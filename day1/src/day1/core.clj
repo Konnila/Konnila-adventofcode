@@ -1,13 +1,23 @@
 (ns day1.core
+  (:require [clojure.set :as s])
   (:gen-class))
 
-(defn freq-reducer [acc entry]
-  (if (= "+" (str (first entry)))
-      (+ acc (read-string (subs entry 1)))
-      (- acc (read-string (subs entry 1)))))
+(require '[clojure.set :as setns])
 
-(defn -main
-  [& args]
-  (with-open [rdr (clojure.java.io/reader "input.txt")]
-    (let [lines (map str (line-seq rdr))]
-      (println (reduce freq-reducer 0 lines)))))
+(defn freq-reducer [acc-map entry]
+  (let [acc (:acc acc-map) 
+        found-freqs (:found-freqs acc-map)
+        addition (+ acc (read-string (subs entry 1)))
+        substraction (- acc (read-string (subs entry 1)))]
+    (if (= "+" (str (first entry)))
+        (if (contains? found-freqs addition)
+             (reduced addition)
+             (assoc acc-map :acc addition :found-freqs (s/union found-freqs (set [addition]))))
+        (if (contains? found-freqs substraction)
+             (reduced substraction)
+             (assoc acc-map :acc substraction :found-freqs (s/union found-freqs (set [substraction])))))))
+
+(defn -main [& args]
+  (let [lines (clojure.string/split-lines (slurp "input.txt"))]
+    (println (reduce freq-reducer (assoc {} :found-freqs #{} :acc 0) (cycle lines)))))
+    

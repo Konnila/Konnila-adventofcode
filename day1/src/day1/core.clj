@@ -2,8 +2,6 @@
   (:require [clojure.set :as s])
   (:gen-class))
 
-(require '[clojure.set :as setns])
-
 (defn freq-reducer [acc-map entry]
   (let [acc (:acc acc-map) 
         found-freqs (:found-freqs acc-map)

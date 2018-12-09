@@ -15,11 +15,10 @@
   (if (nil? current)
       ""
       (let 
-        [ stuff (do (println (str "current: " current ", visited: " visited)))
-          new-destinations (do 
-            (apply sorted-set (s/difference (s/union (disj destinations current) (state-map (keyword (str current)))) visited)))
-            next-destination (next-node new-destinations (conj visited current) state-map)]
-            (str current (get-order next-destination new-destinations (conj visited current) state-map)))))
+        [stuff (do (println (str "current: " current ", visited: " visited)))
+        new-destinations (apply sorted-set (s/difference (s/union (disj destinations current) (state-map (keyword (str current)))) visited))
+        next-destination (next-node new-destinations (conj visited current) state-map)]
+          (str current (get-order next-destination new-destinations (conj visited current) state-map)))))
           
 (defn entry-as-map [s]
   (let [kv-pair (drop 1 (re-find #"Step (\S+) must be finished before step (\S+) can begin." s))]
